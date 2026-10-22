@@ -1,0 +1,36 @@
+.nav {
+    display: flex;
+    
+}
+.txt{
+    font-size: 100px;
+    color: darkgreen;
+}
+.txt span{
+    color: #062E03;
+}
+.img {
+    width: 100px;
+}
+.img1 {
+    width: 50px;
+    margin-top: 15px;
+    margin-left: 700px;
+}
+.I {
+    width: 75px;
+    height: 75px;
+    margin-left: -35px;
+}
+.subtxt{
+    color: darkgreen;
+}
+.buts_nav {
+    color: beige;
+    text-decoration: none;
+    margin: 30px;
+    font-size: small;
+}
+.but1 {
+    margin-left: 550px;
+}
