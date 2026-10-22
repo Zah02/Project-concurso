@@ -1,5 +1,6 @@
 .nav {
     display: flex;
+    margin-top: -10px;
     
 }
 .txt{
@@ -20,7 +21,7 @@
 .I {
     width: 75px;
     height: 75px;
-    margin-left: -35px;
+    margin-left: -4 5px;
 }
 .subtxt{
     color: darkgreen;
@@ -30,6 +31,11 @@
     text-decoration: none;
     margin: 30px;
     font-size: small;
+    border: none;
+}
+.buts_nav:hover {
+    border: 1px solid blue;
+    box-shadow: 0 0 20px blue;
 }
 .but1 {
     margin-left: 550px;
