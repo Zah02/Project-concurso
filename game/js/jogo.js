@@ -30,9 +30,13 @@ const startPlayer = () => ({ x: (WORLD_W - 16) / 2, y: (WORLD_H - 16) / 2, w: 16
 let player = startPlayer();
 let camera = { x: 0, y: 0 };
 let projectiles = [];
+let enemyProjectiles = [];
 const MAGAZINE_SIZE = 12;
 const SHOT_COOLDOWN = 0.2;
 const RELOAD_DURATION = 2;
+const ENEMY_SHOT_COOLDOWN = 0.8;
+const ENEMY_MAGAZINE_SIZE = 3;
+const ENEMY_RELOAD_DURATION = 1.2;
 let ammo = MAGAZINE_SIZE;
 let shotCooldown = 0;
 let reloadTimer = 0;
@@ -55,11 +59,11 @@ const biomes = [
   { name: 'Corrupted Lands', power: 'Biodiversity', x1: 300, y1: 0, x2: 710, y2: 230 }
 ];
 const bosses = [
-  { id: 'sea', name: 'Sea Guardian', x: 120, y: 100, w: 32, h: 32, hp: 24, maxHp: 24, image: images.sea, power: 'Water', defeated: false, animal: 'Sea turtle' },
-  { id: 'dry', name: 'Drylands Guardian', x: 150, y: 390, w: 32, h: 32, hp: 24, maxHp: 24, image: images.dry, power: 'Seeds', defeated: false, animal: 'Desert fox' },
-  { id: 'forest', name: 'Forest Guardian', x: 610, y: 390, w: 32, h: 32, hp: 24, maxHp: 24, image: images.dry, power: 'Wind', defeated: false, animal: 'Lynx' },
-  { id: 'snow', name: 'Ice Guardian', x: 850, y: 100, w: 32, h: 32, hp: 24, maxHp: 24, image: images.sea, power: 'Ice', defeated: false, animal: 'Arctic fox' },
-  { id: 'final', name: 'Corrupted Final Boss', x: 510, y: 75, w: 48, h: 48, hp: 48, maxHp: 48, image: images.final, power: 'Biodiversity', defeated: false, final: true, animal: null }
+  { id: 'sea', name: 'Sea Guardian', x: 120, y: 100, w: 32, h: 32, hp: 24, maxHp: 24, image: images.sea, power: 'Water', shotColor: '#42d9ff', enemyAmmo: ENEMY_MAGAZINE_SIZE, enemyShotCooldown: 0.5, enemyReload: 0, defeated: false, animal: 'Sea turtle' },
+  { id: 'dry', name: 'Drylands Guardian', x: 150, y: 390, w: 32, h: 32, hp: 24, maxHp: 24, image: images.dry, power: 'Seeds', shotColor: '#ff8a24', enemyAmmo: ENEMY_MAGAZINE_SIZE, enemyShotCooldown: 0.7, enemyReload: 0, defeated: false, animal: 'Desert fox' },
+  { id: 'forest', name: 'Forest Guardian', x: 610, y: 390, w: 32, h: 32, hp: 24, maxHp: 24, image: images.dry, power: 'Wind', shotColor: '#8bf05a', enemyAmmo: ENEMY_MAGAZINE_SIZE, enemyShotCooldown: 0.9, enemyReload: 0, defeated: false, animal: 'Lynx' },
+  { id: 'snow', name: 'Ice Guardian', x: 850, y: 100, w: 32, h: 32, hp: 24, maxHp: 24, image: images.sea, power: 'Ice', shotColor: '#9beaff', enemyAmmo: ENEMY_MAGAZINE_SIZE, enemyShotCooldown: 0.6, enemyReload: 0, defeated: false, animal: 'Arctic fox' },
+  { id: 'final', name: 'Corrupted Final Boss', x: 510, y: 75, w: 48, h: 48, hp: 48, maxHp: 48, image: images.final, power: 'Biodiversity', shotColor: '#d45bff', enemyAmmo: ENEMY_MAGAZINE_SIZE, enemyShotCooldown: 0.8, enemyReload: 0, defeated: false, final: true, animal: null }
 ];
 const keys = new Set();
 
@@ -85,13 +89,6 @@ window.addEventListener('pointercancel', () => { firing = false; });
 window.addEventListener('blur', () => { keys.clear(); firing = false; });
 document.querySelector('#win-restart').addEventListener('click', resetGame);
 document.querySelector('#restart').addEventListener('click', resetGame);
-document.querySelector('#fullscreen').addEventListener('click', async () => {
-  try {
-    if (!document.fullscreenElement) await document.querySelector('#gameLayout').requestFullscreen();
-    else await document.exitFullscreen();
-  } catch (error) { setNotice('Could not enable fullscreen in this browser.'); }
-});
-
 function attack() {
   if (reloading || shotCooldown > 0 || ammo <= 0) {
     if (reloading) setNotice('Reloading...', 0.5);
@@ -172,6 +169,22 @@ function update(dt) {
       boss.x += ((px - cx) / dist) * 18 * dt;
       boss.y += ((py - cy) / dist) * 18 * dt;
     }
+
+    // Cada guardião dispara a cada 0,8 s e tem carregador de 3 tiros.
+    if (boss.enemyReload > 0) {
+      boss.enemyReload = Math.max(0, boss.enemyReload - dt);
+      if (boss.enemyReload === 0) boss.enemyAmmo = ENEMY_MAGAZINE_SIZE;
+    } else {
+      boss.enemyShotCooldown = Math.max(0, boss.enemyShotCooldown - dt);
+      if (dist < 190 && boss.enemyShotCooldown <= 0 && boss.enemyAmmo > 0) {
+        const shotDx = px - cx, shotDy = py - cy;
+        const shotLen = Math.hypot(shotDx, shotDy) || 1;
+        enemyProjectiles.push({ x: cx, y: cy, dx: shotDx / shotLen, dy: shotDy / shotLen, speed: 72, color: boss.shotColor, owner: 'enemy' });
+        boss.enemyAmmo--;
+        boss.enemyShotCooldown = ENEMY_SHOT_COOLDOWN;
+        if (boss.enemyAmmo <= 0) boss.enemyReload = ENEMY_RELOAD_DURATION;
+      }
+    }
     if (rectsOverlap(player, boss) && player.invuln <= 0) {
       player.hp--;
       player.invuln = 1.2;
@@ -208,7 +221,27 @@ function update(dt) {
         break;
       }
     }
-    if (hitBoss || p.travelled >= p.range || p.x < 0 || p.y < 0 || p.x > WORLD_W || p.y > WORLD_H) projectiles.splice(i, 1);
+    // Os tiros do jogador desaparecem ao sair da janela visível do jogo.
+    const screenX = p.x - camera.x, screenY = p.y - camera.y;
+    if (hitBoss || p.travelled >= p.range || screenX < 0 || screenY < 0 || screenX > VIEW_W || screenY > VIEW_H || p.x < 0 || p.y < 0 || p.x > WORLD_W || p.y > WORLD_H) projectiles.splice(i, 1);
+  }
+
+  // Atualiza tiros inimigos; acertar o jogador tira uma vida e os tiros saem ao deixar o ecrã.
+  for (let i = enemyProjectiles.length - 1; i >= 0; i--) {
+    const p = enemyProjectiles[i];
+    p.x += p.dx * p.speed * dt;
+    p.y += p.dy * p.speed * dt;
+    const hitPlayer = p.x >= player.x && p.x <= player.x + player.w && p.y >= player.y && p.y <= player.y + player.h;
+    if (hitPlayer && player.invuln <= 0) {
+      player.hp--;
+      player.invuln = 1.2;
+      setNotice('Pollution shot hit you!');
+      if (player.hp <= 0) { gameOver = true; setNotice('You were defeated. Press Restart.'); }
+      enemyProjectiles.splice(i, 1);
+      continue;
+    }
+    const sx = p.x - camera.x, sy = p.y - camera.y;
+    if (hitPlayer || sx < 0 || sy < 0 || sx > VIEW_W || sy > VIEW_H || p.x < 0 || p.y < 0 || p.x > WORLD_W || p.y > WORLD_H) enemyProjectiles.splice(i, 1);
   }
 
   if (trophy.active && !trophy.collected && Math.hypot((player.x + 8) - (trophy.x + 6), (player.y + 8) - (trophy.y + 6)) < 17) {
@@ -241,6 +274,12 @@ function draw() {
     const colors = { Water:'#65d9ff', Seeds:'#9df06d', Wind:'#f5f5dc', Ice:'#8ceaff', Biodiversity:'#df7bff' };
     ctx.fillStyle = colors[p.type] || '#fff';
     ctx.fillRect(Math.round(p.x - camera.x - 2), Math.round(p.y - camera.y - 2), 5, 5);
+  }
+  for (const p of enemyProjectiles) {
+    ctx.fillStyle = p.color;
+    ctx.fillRect(Math.round(p.x - camera.x - 2), Math.round(p.y - camera.y - 2), 5, 5);
+    ctx.strokeStyle = '#101010'; ctx.lineWidth = 1;
+    ctx.strokeRect(Math.round(p.x - camera.x - 2), Math.round(p.y - camera.y - 2), 5, 5);
   }
 
   if (trophy.active && !trophy.collected) {
@@ -283,8 +322,11 @@ function drawMinimap() {
   // Boss markers and player marker
   for (const b of bosses) {
     if (b.defeated) continue;
-    mctx.fillStyle = b.final ? '#ff55ff' : '#ff6255';
-    mctx.fillRect(b.x / WORLD_W * minimap.width - 2, b.y / WORLD_H * minimap.height - 2, 5, 5);
+    const mx = Math.round(b.x / WORLD_W * minimap.width - 2);
+    const my = Math.round(b.y / WORLD_H * minimap.height - 2);
+    mctx.fillStyle = '#ffffff'; mctx.fillRect(mx - 1, my - 1, 7, 7);
+    mctx.fillStyle = '#050505'; mctx.fillRect(mx, my, 5, 5);
+    if (b.final) { mctx.fillStyle = '#050505'; mctx.fillRect(mx + 1, my + 1, 3, 3); }
   }
   mctx.fillStyle = '#fff56b';
   mctx.fillRect(player.x / WORLD_W * minimap.width - 2, player.y / WORLD_H * minimap.height - 2, 5, 5);
@@ -325,7 +367,7 @@ function updateUI() {
   document.querySelector('#message').textContent = noticeTime > 0 || paused || gameOver || won ? notice : (allGuardiansDefeated() ? 'The final boss has been unlocked!' : 'Defeat the guardians and rescue the animals.');
 }
 function resetGame() {
-  player = startPlayer(); camera = { x: 0, y: 0 }; projectiles = []; ammo = MAGAZINE_SIZE; shotCooldown = 0; reloadTimer = 0; reloading = false; paused = false; gameOver = false; won = false;
+  player = startPlayer(); camera = { x: 0, y: 0 }; projectiles = []; enemyProjectiles = []; ammo = MAGAZINE_SIZE; shotCooldown = 0; reloadTimer = 0; reloading = false; paused = false; gameOver = false; won = false;
   bosses[0].x = 120; bosses[0].y = 100;
   bosses[1].x = 150; bosses[1].y = 390;
   bosses[2].x = 610; bosses[2].y = 390;
@@ -333,7 +375,7 @@ function resetGame() {
   bosses[4].x = 510; bosses[4].y = 75;
   trophy = { x: 510, y: 75, active: false, collected: false };
   firing = false; document.querySelector('#win-screen').classList.add('hidden');
-  for (const b of bosses) { b.hp = b.maxHp; b.defeated = false; }
+  for (const b of bosses) { b.hp = b.maxHp; b.defeated = false; b.enemyAmmo = ENEMY_MAGAZINE_SIZE; b.enemyShotCooldown = 0.5; b.enemyReload = 0; }
   setNotice('The adventure has restarted!'); updateUI();
 }
 function loop(timestamp) {
