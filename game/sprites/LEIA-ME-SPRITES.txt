@@ -1,0 +1,8 @@
+SPRITE FILE GUIDE
+Replace any PNG with your own artwork, keeping the exact filename.
+Player: jogador-parado.png and jogador-andar.png (16x16)
+Bosses: boss-sea.png, boss-drylands.png, boss-forest.png, boss-snow.png (32x32); boss-final.png (48x48)
+Animals: animal-turtle.png, animal-desert-fox.png, animal-lynx.png, animal-arctic-fox.png (16x16)
+Map: ../mapa/mundo.png (1024x512)
+Use PNG with transparent background for characters. Boss portraits in the UI use the same boss files.
+Projectiles and trophy are drawn in JavaScript rather than loaded as image sprites.
