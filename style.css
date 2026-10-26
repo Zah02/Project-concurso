@@ -10,8 +10,38 @@
 .row {
   display: flex;
 }
+.card {
+  border: solid 1px rgb(83, 81, 81);
+  background-color: rgb(34, 39, 35);
+  border-radius: 35px;
+  height: 500px;
+  width: 400px;
+  margin-top: -200px;
+  margin: 20px;
+}
+.card:Hover {
+  transform: scale(1.08);
+  transition: transform 0.3s ease;
+}
+.img_cards {
+  width: 370px;
+  border-radius: 35px;
+  margin: 15px;
+}
+.but_cards {
+  background-color: #279347;
+  border-radius: 75px;
+  border: solid 2px beige;
+  margin-left: 40%;
+  margin-top: 35px;
+  width: 50px;
+  height: 50px;
+}
+.but_img {
+  width: 40px;
+}
 .txt{
-    font-size: 100px;
+    font-size: 200px;
     color: darkgreen;
 }
 .txt span{
@@ -29,9 +59,22 @@
     margin-top: 15px;
     margin-left: 690px;
 }
+.img1:hover {
+  animation: spin 1s ease-in-out;
+}
+
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .img2 {
   width: 750px;
-  margin-left: 600px;
+  margin-left: 500px;
 }
 .I {
     width: 75px;
@@ -307,4 +350,15 @@
       padding: 20px 10px;
     }
   }
-  
+    .imgss{
+      border: solid 1px white;
+      margin: 10px;
+    }
+    .q{
+      width: 500px;
+    }
+    .txt {
+      float: right;
+      font-size: large;
+    }
+    
