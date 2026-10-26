@@ -14,9 +14,8 @@
   border: solid 1px rgb(83, 81, 81);
   background-color: rgb(34, 39, 35);
   border-radius: 35px;
-  height: 500px;
+  height: 425px;
   width: 400px;
-  margin-top: -200px;
   margin: 20px;
 }
 .card:Hover {
@@ -27,18 +26,30 @@
   width: 370px;
   border-radius: 35px;
   margin: 15px;
+  margin-bottom: -10px;
 }
 .but_cards {
   background-color: #279347;
   border-radius: 75px;
   border: solid 2px beige;
   margin-left: 40%;
-  margin-top: 35px;
+  margin-top: 20px;
   width: 50px;
   height: 50px;
 }
+.but_cards:hover {
+  transform: scale(1.2);
+  transition: transform 0.3s ease;
+}
 .but_img {
   width: 40px;
+}
+.text {
+  color: #209b40;
+  font-size: medium;
+  text-align: justify;
+  margin-right: 850px;
+  margin-top: 25px;
 }
 .txt{
     font-size: 200px;
@@ -74,7 +85,7 @@
 }
 .img2 {
   width: 750px;
-  margin-left: 500px;
+  margin-left: 300px;
 }
 .I {
     width: 75px;
@@ -108,7 +119,7 @@
   color: beige;
   width: 200px;
   height: 40px;
-  margin-top: 15px;
+  margin-top: 25px;
 }
 .but6:hover {
     border: none;
