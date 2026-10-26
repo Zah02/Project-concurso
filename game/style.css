@@ -15,8 +15,6 @@ h1{margin:0}
 button{color:#f4fff0;background:#376b40;border:1px solid #8bc47c;padding:7px 11px;border-radius:7px;cursor:pointer;font-weight:700;font-size:.8rem}
 button:hover{background:#488451}
 .side-actions{display:flex;gap:8px;flex-wrap:wrap}
-#back-button{display:inline-flex;align-items:center;text-decoration:none;color:#f4fff0;background:#263d2a;border:1px solid #8bc47c;padding:7px 11px;border-radius:7px;font-weight:700;font-size:.8rem}
-#back-button:hover{background:#35543b}
 #message{min-height:1.3em;text-align:left;color:#b8e8a5;margin:0;font-size:clamp(.68rem,.9vw,.82rem);line-height:1.3}
 footer{display:flex;flex-direction:column;gap:4px;color:#d0ddcf;font-size:clamp(.62rem,.8vw,.72rem);margin-top:auto}
 kbd{display:inline-block;background:#2c4133;border:1px solid #607a61;border-radius:4px;padding:1px 4px;margin-right:2px;font:inherit}
@@ -42,5 +40,7 @@ kbd{display:inline-block;background:#2c4133;border:1px solid #607a61;border-radi
 .win-screen.hidden{display:none}
 .win-card{text-align:center;padding:34px 48px;border:2px solid #a7d88e;border-radius:18px;background:#1c3023;box-shadow:0 0 60px #75c65a55}
 .trophy{font-size:76px;margin-bottom:10px}.win-card h1{font-size:3rem;color:#b9f59c}
+.game-layout:fullscreen{width:100vw;height:100dvh;padding:clamp(8px,1.4vw,18px);grid-template-columns:minmax(250px,min(31vw,390px)) minmax(0,1fr);background:#101a16}
+.game-layout:fullscreen .screen-wrap{height:min(100%,calc(100dvh - 24px),calc(100vw - 420px));width:auto;max-width:100%}
 @media(max-height:650px){.game-layout{padding:7px;gap:8px;grid-template-columns:minmax(220px,28vw) minmax(0,1fr)}.side-panel{gap:5px}.panel{padding:7px}.boss-slot{min-height:42px}.boss-shadow{width:24px;height:24px}.map-panel .hint{display:none}.minimap-wrap,.minimap-wrap canvas{max-height:12vh}.game-title h1{font-size:1.1rem}}
-@media(max-width:620px){html,body{overflow:auto;height:auto;min-height:100%}.game-layout{height:auto;min-height:100dvh;overflow:visible;grid-template-columns:1fr;grid-template-rows:auto auto}.side-panel{order:1;overflow:visible}.play-column{order:0;min-height:0}.screen-wrap{width:min(90vw,calc(100dvh - 30px));height:auto;aspect-ratio:1}.game-title h1{font-size:1.4rem}footer{margin-top:0}.map-panel{margin-top:0}.minimap-wrap,.minimap-wrap canvas{max-height:none}}
+@media(max-width:620px){html,body{overflow:auto;height:auto;min-height:100%}.game-layout{height:auto;min-height:100dvh;overflow:visible;grid-template-columns:1fr;grid-template-rows:auto auto}.side-panel{order:1;overflow:visible}.play-column{order:0;min-height:0}.screen-wrap{width:min(90vw,calc(100dvh - 30px));height:auto;aspect-ratio:1}.game-title h1{font-size:1.4rem}footer{margin-top:0}.map-panel{margin-top:0}.minimap-wrap,.minimap-wrap canvas{max-height:none}.game-layout:fullscreen{height:100dvh;overflow:hidden;grid-template-columns:minmax(190px,32vw) minmax(0,1fr);grid-template-rows:1fr}.game-layout:fullscreen .side-panel{order:0;overflow:hidden}.game-layout:fullscreen .play-column{order:1}.game-layout:fullscreen .screen-wrap{width:min(calc(100dvh - 16px),calc(100vw - 220px));height:auto}}
