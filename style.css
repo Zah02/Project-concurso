@@ -14,8 +14,17 @@
   border: solid 1px rgb(83, 81, 81);
   background-color: rgb(34, 39, 35);
   border-radius: 35px;
-  height: 425px;
+  height: 475px;
   width: 400px;
+  margin: 20px;
+  margin-top: 100px;
+}
+.card1 {
+  border: solid 1px rgb(83, 81, 81);
+  background-color: rgb(34, 39, 35);
+  border-radius: 35px;
+  height: 265px;
+  width: 98%;
   margin: 20px;
 }
 .card:Hover {
@@ -68,7 +77,7 @@
 .img1 {
     width: 50px;
     margin-top: 15px;
-    margin-left: 690px;
+    margin-left: 720px;
 }
 .img1:hover {
   animation: spin 1s ease-in-out;
@@ -84,8 +93,8 @@
   }
 }
 .img2 {
-  width: 750px;
-  margin-left: 300px;
+  width: 900px;
+  margin-left: 150px;
 }
 .I {
     width: 75px;
@@ -110,7 +119,7 @@
     color: rgb(2, 158, 2);
 }
 .but1 {
-    margin-left: 545px;
+    margin-left: 600px;
 }
 .but6 {
   border: none;
@@ -361,15 +370,28 @@
       padding: 20px 10px;
     }
   }
-    .imgss{
-      border: solid 1px white;
-      margin: 10px;
-    }
     .q{
       width: 500px;
+      border-radius: 35px;
+      margin: 6px;
     }
     .txt {
       float: right;
       font-size: large;
+    }
+    .txt2{
+    font-size: medium;
+    color: darkgreen;
+    text-align: justify;
+    margin: 25px;
+    }
+    .txt3 {
+      float: left;
+      font-size: medium;
+      color: darkgreen;
+      text-align: justify;
+      margin: 25px;
+      margin-left: 175px;
+      margin-right: 75px;
     }
     
